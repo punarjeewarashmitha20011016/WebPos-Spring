@@ -137,14 +137,14 @@ addAdminSignUpDetailsBtn.click(function () {
         address: signUpAdminAddress.val()
     }
     if (confirm('Do you want to save this admin details') == true) {
-        ifAdminExists();
-        if (checkIfTrueOrFalseReturnedFromSearchAdminDetails == true) {
+        /*ifAdminExists();*/
+        /*if (checkIfTrueOrFalseReturnedFromSearchAdminDetails == true) {
             alert('This ' + signUpAdminId.val() + ' already exists');
             clearFieldsInAdminSignup();
             generateAdminId();
             setAdminInputBordersReset();
             return
-        } else {
+        } else {*/
             $.ajax({
                 method: "POST",
                 dataType: "json",
@@ -176,7 +176,7 @@ addAdminSignUpDetailsBtn.click(function () {
                     alert(error);
                 }
             })
-        }
+        /*}*/
     } else {
         alert('Saving admin details of ' + signUpAdminId.val() + ' is unsuccessful');
         clearFieldsInAdminSignup();
