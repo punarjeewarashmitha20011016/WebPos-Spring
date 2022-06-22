@@ -29,10 +29,6 @@ var signUpAdminAddressLbl = $('#signUpAdminAddressLbl span');
 
 var fieldsArrayInAdmin = [signUpAdminId, signUpAdminName, signUpAdminNic, signUpAdminContactNo, signUpAdminUserName, signUpAdminPassword, signUpAdminAddress];
 
-var checkIfTrueOrFalseReturnedFromSearchAdminDetails;
-var checkIfAdminExists;
-
-
 $('#signUpAdminId,#signUpAdminName,#signUpAdminNic,#signUpAdminContactNo,#signUpAdminUserName,#signUpAdminPassword,#signUpAdminAddress').off('keydown');
 $('#signUpAdminId,#signUpAdminName,#signUpAdminNic,#signUpAdminContactNo,#signUpAdminUserName,#signUpAdminPassword,#signUpAdminAddress').keydown(function (e) {
     if (e.key == 'Tab') {
@@ -137,46 +133,29 @@ addAdminSignUpDetailsBtn.click(function () {
         address: signUpAdminAddress.val()
     }
     if (confirm('Do you want to save this admin details') == true) {
-        /*ifAdminExists();*/
-        /*if (checkIfTrueOrFalseReturnedFromSearchAdminDetails == true) {
-            alert('This ' + signUpAdminId.val() + ' already exists');
-            clearFieldsInAdminSignup();
-            generateAdminId();
-            setAdminInputBordersReset();
-            return
-        } else {*/
-            $.ajax({
-                method: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify(signUpDetails),
-                url: "http://localhost:8080/WebPosEE/admin",
-                success: function (resp) {
-                    if (resp.status == 200) {
-                        alert(resp.message);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    } else if (resp.status == 400) {
-                        alert(resp.message);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    } else {
-                        alert(resp.data);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    }
-                },
-                error: function (ob, textstatus, error) {
-                    alert(error);
+        $.ajax({
+            method: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(signUpDetails),
+            url: "http://localhost:8080/BackEnd_war_exploded/admin",
+            success: function (resp) {
+                if (resp.status == 200) {
+                    alert(resp.message);
+                    setDataToTheAdminTable();
+                    clearFieldsInAdminSignup();
+                    setAdminInputBordersReset();
+                    generateAdminId();
                 }
-            })
-        /*}*/
+            },
+            error: function (ob) {
+                alert(ob.message);
+                setDataToTheAdminTable();
+                clearFieldsInAdminSignup();
+                setAdminInputBordersReset();
+                generateAdminId();
+            }
+        })
     } else {
         alert('Saving admin details of ' + signUpAdminId.val() + ' is unsuccessful');
         clearFieldsInAdminSignup();
@@ -188,55 +167,37 @@ addAdminSignUpDetailsBtn.click(function () {
 updateAdminSignUpDetailsBtn.off('click');
 updateAdminSignUpDetailsBtn.click(function () {
     if (confirm('Do you want to update the admin details relevant to admin id - ' + signUpAdminId.val() + '') == true) {
-        ifAdminExists();
-        console.log(checkIfAdminExists + " - checkIf Admin exists")
-        if (checkIfAdminExists == false) {
-            alert('admin details not exists')
-            clearFieldsInAdminSignup();
-            setAdminInputBordersReset();
-            generateAdminId();
-        } else {
-            console.log('else eke ine')
-            let admin = {
-                id: signUpAdminId.val(),
-                name: signUpAdminName.val(),
-                nic: signUpAdminNic.val(),
-                contactNo: signUpAdminContactNo.val(),
-                userName: signUpAdminUserName.val(),
-                password: signUpAdminPassword.val(),
-                address: signUpAdminAddress.val()
-            }
-            $.ajax({
-                url: "http://localhost:8080/WebPosEE/admin",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify(admin),
-                method: "PUT",
-                success: function (resp) {
-                    if (resp.status == 200) {
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    } else if (resp.status == 400) {
-                        alert(resp.message);
-                    } else {
-                        alert(resp.data);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    }
-                },
-                error: function (ob, textstatus, error) {
-                    alert(error)
+        let admin = {
+            id: signUpAdminId.val(),
+            name: signUpAdminName.val(),
+            nic: signUpAdminNic.val(),
+            contactNo: signUpAdminContactNo.val(),
+            userName: signUpAdminUserName.val(),
+            password: signUpAdminPassword.val(),
+            address: signUpAdminAddress.val()
+        }
+        $.ajax({
+            url: "http://localhost:8080/BackEnd_war_exploded/admin",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(admin),
+            method: "PUT",
+            success: function (resp) {
+                if (resp.status == 200) {
                     setDataToTheAdminTable();
                     clearFieldsInAdminSignup();
                     setAdminInputBordersReset();
                     generateAdminId();
                 }
-            })
-        }
+            },
+            error: function (ob) {
+                alert(ob.message)
+                setDataToTheAdminTable();
+                clearFieldsInAdminSignup();
+                setAdminInputBordersReset();
+                generateAdminId();
+            }
+        })
     } else {
         alert('Updating admin ' + signUpAdminId.val() + ' is unsuccessful');
         clearFieldsInAdminSignup();
@@ -249,46 +210,25 @@ updateAdminSignUpDetailsBtn.click(function () {
 deleteAdminSignUpDetailsBtn.off('click');
 deleteAdminSignUpDetailsBtn.click(function () {
     if (confirm('Do you want to delete this admin details') == true) {
-        ifAdminExists();
-        if (checkIfAdminExists == false) {
-            alert('admin details not exists')
-            clearFieldsInAdminSignup();
-            setAdminInputBordersReset();
-            generateAdminId();
-        } else {
-            $.ajax({
-                url: "http://localhost:8080/WebPosEE/admin?adminID=" + signUpAdminId.val(),
-                method: "DELETE",
-                success: function (resp) {
-                    if (resp.status == 200) {
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    } else if (resp.status == 400) {
-                        alert(resp.message);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-
-                    } else {
-                        alert(resp.data);
-                        setDataToTheAdminTable();
-                        clearFieldsInAdminSignup();
-                        setAdminInputBordersReset();
-                        generateAdminId();
-                    }
-                },
-                error: function (ob, textstatus, error) {
-                    alert(error)
+        $.ajax({
+            url: "http://localhost:8080/BackEnd_war_exploded/admin?id=" + signUpAdminId.val(),
+            method: "DELETE",
+            success: function (resp) {
+                if (resp.status == 200) {
                     setDataToTheAdminTable();
                     clearFieldsInAdminSignup();
                     setAdminInputBordersReset();
                     generateAdminId();
                 }
-            })
-        }
+            },
+            error: function (ob) {
+                alert(ob.message)
+                setDataToTheAdminTable();
+                clearFieldsInAdminSignup();
+                setAdminInputBordersReset();
+                generateAdminId();
+            }
+        })
     } else {
         alert("Deleting admin details is unsuccessful")
         clearFieldsInAdminSignup();
@@ -297,60 +237,27 @@ deleteAdminSignUpDetailsBtn.click(function () {
     }
 })
 
-function setDataToCheckAdminExists(resp) {
-    checkIfAdminExists = resp;
-}
-
-function ifAdminExists() {
-    $.ajax({
-        url: "http://localhost:8080/WebPosEE/admin?option=checkIfAdminExists&adminID=" + signUpAdminId.val(),
-        dataType: "json",
-        contentType: "application/json",
-        method: "GET",
-        success: function (resp) {
-            if (resp.status == 200) {
-                console.log(resp.bool);
-                setDataToCheckAdminExists(resp.bool);
-            } else if (resp.status == 400) {
-                setDataToCheckAdminExists(resp.bool);
-            } else {
-                alert(resp.data);
-            }
-        }
-    })
-}
-
-function checkIfTrueOrFalseReturnFromAjaxSearch(resp) {
-    checkIfTrueOrFalseReturnedFromSearchAdminDetails = resp;
-}
-
 function searchAdminSignupDetails() {
     $.ajax({
         dataType: "json",
         contentType: "application/json",
         method: "GET",
-        url: "http://localhost:8080/WebPosEE/admin?option=searchAdmin&adminId=" + signUpAdminId.val(),
+        url: "http://localhost:8080/BackEnd_war_exploded/admin/searchAdmin?id=" + signUpAdminId.val(),
         success: function (resp) {
             if (resp.status == 200) {
-                let adminSearchOb = resp;
-                console.log(adminSearchOb.adminNic)
-                signUpAdminName.val(adminSearchOb.adminName);
-                signUpAdminNic.val(adminSearchOb.adminNic);
-                signUpAdminContactNo.val(adminSearchOb.adminContactNo);
-                signUpAdminUserName.val(adminSearchOb.adminUserName);
-                signUpAdminPassword.val(adminSearchOb.adminPassword);
-                signUpAdminAddress.val(adminSearchOb.adminAddress);
-                checkIfTrueOrFalseReturnFromAjaxSearch(true);
-            } else if (resp.status == 400) {
-                alert(resp.message);
-            } else {
-                alert(resp.data);
+                let adminSearchOb = resp.data;
+                console.log(adminSearchOb.nic)
+                signUpAdminName.val(adminSearchOb.name);
+                signUpAdminNic.val(adminSearchOb.nic);
+                signUpAdminContactNo.val(adminSearchOb.contactNo);
+                signUpAdminUserName.val(adminSearchOb.userName);
+                signUpAdminPassword.val(adminSearchOb.password);
+                signUpAdminAddress.val(adminSearchOb.address);
             }
         },
-        error: function (ob, textstatus, error) {
+        error: function (ob) {
             console.log("error")
-            alert(error);
-            checkIfTrueOrFalseReturnFromAjaxSearch(false);
+            alert(ob.message);
         }
     })
 }
@@ -367,54 +274,42 @@ function clearFieldsInAdminSignup() {
 
 function generateAdminId() {
     $.ajax({
-        url: "http://localhost:8080/WebPosEE/admin?option=generateAdminId",
+        url: "http://localhost:8080/BackEnd_war_exploded/admin/generateId",
         method: "GET",
-        dataType: "json",
-        contentType: "application/json",
         success: function (resp) {
             if (resp.status == 200) {
-                console.log("Log - " + resp.adminID);
-                signUpAdminId.val(resp.adminID);
-            } else if (resp.status == 400) {
-                alert(resp.message);
-            } else {
-                alert(resp.data);
+                console.log("Log - " + resp.data);
+                signUpAdminId.val(resp.data);
             }
         },
-        error: function (ob, textstatus, error) {
-            alert(error);
+        error: function (ob) {
+            alert(ob.message);
         }
     });
 }
 
 function setDataToTheAdminTable() {
     $.ajax({
-        url: "http://localhost:8080/WebPosEE/admin?option=getAll",
-        dataType: "json",
-        contentType: "application/json",
+        url: "http://localhost:8080/BackEnd_war_exploded/admin/getAll",
         method: "GET",
         success: function (resp) {
-            let arr = resp;
+            let arr = resp.data;
+            console.log(arr)
             adminArray.splice(0, adminArray.length);
             for (let i = 0; i < arr.length; i++) {
                 adminArray.push(arr[i]);
                 adminDetailsTable.children('tbody').children('tr').remove();
-                if (arr[i].status == 200) {
-                    for (let i = 0; i < resp.length; i++) {
-                        console.log(resp[i].adminName)
-                        adminDetailsTable.children('tbody').append('<tr><td>' + (i + 1) + '</td><td>' + arr[i].adminId + '</td><td>' + arr[i].adminName + '</td><td>' + arr[i].adminNic + '</td><td>' + arr[i].adminContactNo + '</td><td>' + arr[i].adminUserName + '</td><td>' + arr[i].adminPassword + '</td><td>' + arr[i].adminAddress + '</td></tr>');
+                if (resp.status == 200) {
+                    for (let i = 0; i < arr.length; i++) {
+                        console.log(arr[i].name)
+                        adminDetailsTable.children('tbody').append('<tr><td>' + (i + 1) + '</td><td>' + arr[i].id + '</td><td>' + arr[i].name + '</td><td>' + arr[i].nic + '</td><td>' + arr[i].contactNo + '</td><td>' + arr[i].userName + '</td><td>' + arr[i].password + '</td><td>' + arr[i].address + '</td></tr>');
                     }
-                } else if (arr[i].status == 400) {
-                    adminDetailsTable.children('tbody').children('tr').remove();
-                    return;
-                } else {
-                    adminDetailsTable.children('tbody').children('tr').remove();
-                    return;
                 }
             }
         },
-        error: function (ob, textstatus, error) {
-            alert(error);
+        error: function (ob) {
+            alert(ob.message);
+            adminDetailsTable.children('tbody').children('tr').remove();
         }
     })
 }
